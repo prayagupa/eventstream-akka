@@ -9,5 +9,5 @@ import java.util.Date
 trait Event
 trait MessageLog
 
-case class PackageArrived(weight: Int) extends Event
+case class PackageArrivedEvent(packageId: String, items: List[String]) extends Event
 case class PackageShipped(shippedDate: Date) extends MessageLog
