@@ -1,4 +1,5 @@
-package com.eventstream
+package com.eventstream.actor
+
 import java.util.Date
 
 /**

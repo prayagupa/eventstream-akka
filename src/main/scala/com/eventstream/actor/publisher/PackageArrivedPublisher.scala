@@ -1,7 +1,7 @@
 package com.eventstream.publisher
 
 import akka.actor._
-import com.eventstream.PackageArrivedEvent
+import com.eventstream.actor.PackageArrivedEvent
 
 /**
  * Created by prayagupd
