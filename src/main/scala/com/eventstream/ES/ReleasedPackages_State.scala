@@ -5,9 +5,9 @@ package com.eventstream.ES
  * on 3/12/16.
  */
 
-case class PackageReleasedAggregate(history: List[PackageReleasedEvent] = Nil) {
+case class ReleasedPackages_State(history: List[PackageReleasedEvent] = Nil) {
 
-  def apply(event: PackageReleasedEvent): PackageReleasedAggregate =
+  def apply(event: PackageReleasedEvent): ReleasedPackages_State =
     copy(event :: history)
 
   def size: Int =

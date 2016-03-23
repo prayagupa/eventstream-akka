@@ -10,17 +10,35 @@ import akka.actor.{Props, ActorSystem}
 object PackageReleaseApplication {
 
   def main(args: Array[String]) {
+    start()
+  }
+
+  def start(): Unit = {
     implicit val system = ActorSystem("event-stream")
 
     val packageReleasedActor = system.actorOf(Props[PackageReleasePersistentActor], "packageReleasedActor")
 
-    packageReleasedActor ! PackageReleaseCommand("shirts,pants")
-    packageReleasedActor ! PackageReleaseCommand("shirts,underwear")
+    packageReleasedActor ! PackageReleaseCommand("PCKG001", Array("shirts","pants"))
+    packageReleasedActor ! PackageReleaseCommand("PCKG002", Array("tees,underwear"))
 
     packageReleasedActor ! "snapshotIt"
 
-    packageReleasedActor ! PackageReleaseCommand("coat")
-    packageReleasedActor ! "displayCommands"
+    packageReleasedActor ! PackageReleaseCommand("PCKG003", Array("coat"))
+    packageReleasedActor ! "displayActorState"
+
+    Thread.sleep(1000)
+
+    system.terminate()
+  }
+
+  def restart(): Unit = {
+    implicit val system = ActorSystem("event-stream")
+
+    val packageReleasedActor = system.actorOf(Props[PackageReleasePersistentActor], "packageReleasedActor")
+
+    packageReleasedActor ! PackageReleaseCommand("PCKG00-AFTER-RESTART", Array("pants"))
+
+    packageReleasedActor ! "displayActorState"
 
     Thread.sleep(1000)
 

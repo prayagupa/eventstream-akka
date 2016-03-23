@@ -1,6 +1,7 @@
 package com.eventstream.ES
 
 /**
+ * https://github.com/ironfish/akka-persistence-mongo-samples/blob/master/mongo-cqrs-es-app/src/main/scala/com/github/ironfish/akka/persistence/cqrses/sample/Employee.scala
  * Created by prayagupd
  * on 2/10/16.
  */
@@ -12,37 +13,43 @@ class PackageReleasePersistentActor extends PersistentActor {
   override def persistenceId = "packageReleasedActor"
 
   // state is a list of persisted event data contained in PackageState.
-  var aggregate = PackageReleasedAggregate()
+  var internalState = ReleasedPackages_State()
 
-  // persists events asynchronously and the event handler is executed for successfully persisted events. Successfully
-  // persisted events are internally sent back to the persistent actor as individual messages that trigger event
+  // persists events asynchronously and the event handler is executed for successfully persisted events.
+  // Successfully persisted events are internally sent back to the persistent actor as individual messages that trigger event
   // handler executions.
   val receiveCommand: Receive = {
-    case PackageReleaseCommand(packageId) =>
-      persist(PackageReleasedEvent(historySize, s"$packageId")) (update)
+    case PackageReleaseCommand(packageId, items) =>
 
-      persist(PackageReleasedEvent(historySize+1, s"$packageId")) { persistedEvent =>
-        update(persistedEvent)
-        publish(persistedEvent)
+      persist(processCommand(packageId, items)) { persistedEvent =>
+        updateActorState(persistedEvent)
+        publishToTheWorld(persistedEvent)
       }
-    case "snapshotIt"  => saveSnapshot(aggregate)
-    case "displayCommands" => println(aggregate)
+
+    case "snapshotIt"  => saveSnapshot(internalState)
+    case "displayActorState" => println(internalState)
+  }
+
+  def processCommand(packageId: String, items: Array[String]): PackageReleasedEvent = {
+    //side effect
+    //update collection
+    PackageReleasedEvent(packageId, items)
   }
 
   // receiveRecover method defines how state is updated during recovery
   // by handling PackageReleasedEvent and SnapshotOffer messages
   val receiveRecover: Receive = {
-    case event: PackageReleasedEvent                          => update(event)
-    case SnapshotOffer(_, snapshot: PackageReleasedAggregate) => aggregate = snapshot
+    case event: PackageReleasedEvent => updateActorState(event)
+    case SnapshotOffer(_, snapshot: ReleasedPackages_State) => internalState = snapshot
   }
 
-  def update(event: PackageReleasedEvent): Unit =
-    aggregate = aggregate.apply(event)
+  def updateActorState(releasedEvent: PackageReleasedEvent): Unit =
+    internalState = internalState.apply(releasedEvent)
 
-  def historySize =
-    aggregate.size
+  def sequenceId =
+    internalState.size
 
-  def publish(event: Event): Unit = {
+  def publishToTheWorld(event: Event): Unit = {
     context.system.eventStream.publish(event)
   }
 }

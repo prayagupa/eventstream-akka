@@ -6,7 +6,7 @@ package com.eventstream.ES
  */
 
 sealed trait Command
-case class PackageReleaseCommand(idWhichIsData: String) extends Command
+case class PackageReleaseCommand(packageId: String, items: Array[String]) extends Command
 
 sealed trait Event
-case class PackageReleasedEvent(index: Int, id: String) extends Event
+case class PackageReleasedEvent(packageId: String, items: Array[String]) extends Event
