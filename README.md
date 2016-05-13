@@ -1,9 +1,12 @@
 ```
+start mongo 3.0.7
+
 sbt run
 ```
 
 Actor State
-----------------------
+-----------
+
 ```
 List(PackageReleasedEvent(PCKG001,[Ljava.lang.String;@f58efee), 
 PackageReleasedEvent(PCKG002,[Ljava.lang.String;@30312d14), 
@@ -32,10 +35,18 @@ PackageReleasedEvent(PCKG003,[Ljava.lang.String;@4ccaf6f1))
 
 ```
 
-mongodb eventstream
+mongodb event-stream
 --------------------
+
 ```
 use shipping-db
+prayag-top(mongod-3.0.7) shipping-db> show collections
+EventStream    → 0.003MB / 0.008MB
+Snapshot       → 0.002MB / 0.008MB
+system.indexes → 0.001MB / 0.008MB
+```
+
+```
 db.EventStream.find({})
 {
   "_id": ObjectId("56f2166e9b64750c13a9ba81"),
@@ -85,19 +96,27 @@ http://krasserm.blogspot.com/2013/12/introduction-to-akka-persistence.html
 
 Questions
 ------------
-* amazing, how state is mapped back once actor instance is re-started? (persistenceId mapped to journal collection field maybe)
-- When a PersistentActor is started or restarted, journaled messages are replayed to that actor so that it can recover 
-internal state from these messages.
+* How actor state is mapped back once actor/consumer instance is re-started? 
 
-* how external system can talk to PersistentActor so that it receives commands, ?? CommandStreaming ??
+_persistenceId mapped to journal collection field maybe_
+
+_When a PersistentActor is started or restarted, journaled messages are replayed to that actor so that it can recover 
+internal state from these messages._
+
+* How external system can talk to PersistentActor so that it receives Commands ?? 
+
+_CommandStreaming ??_
+
+_external system probably doesn't need to talk to, rather talks to some end point which will publish the Command?? I don't know._
 
 * PersistentActor snapshots the Events not the Commands??
 
-* What if same command is processed twice?? Can it happen??
+* What if same Command is processed twice?? Can it happen?? How can it be prevented?
 
 * Who processes Events actually?? All i see is Commands.
-- PersistentView ??
+
+_PersistentView ??
 A PersistentView is a persistent, stateful actor that receives JournaledMessages that have been written 
 by another persistent actor. 
 A PView itself does not journal new messages, instead, it updates internal-state only from 
-a PersistentActor's replicated message stream.
+a PersistentActor's replicated message stream._

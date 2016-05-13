@@ -39,7 +39,10 @@ class PackageReleasePersistentActor extends PersistentActor {
   // receiveRecover method defines how state is updated during recovery
   // by handling PackageReleasedEvent and SnapshotOffer messages
   val receiveRecover: Receive = {
-    case event: PackageReleasedEvent => updateActorState(event)
+    case event: PackageReleasedEvent => {
+      println("receiveRecover")
+      updateActorState(event)
+    }
     case SnapshotOffer(_, snapshot: ReleasedPackages_State) => internalState = snapshot
   }
 
