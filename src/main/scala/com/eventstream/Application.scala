@@ -6,7 +6,9 @@ package com.eventstream
  */
 
 object Application {
+
   def main(args: Array[String]) {
-    EventStreamProcessor process()
+    EventStreamDispatcher dispatchEvent()
   }
+
 }

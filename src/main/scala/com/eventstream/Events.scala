@@ -6,8 +6,7 @@ import java.util.Date
  * on 2/6/16.
  */
 
-trait Event
-trait MessageLog
+trait BusinessEvent
 
-case class PackageArrived(weight: Int) extends Event
-case class PackageShipped(shippedDate: Date) extends MessageLog
+case class PackageArrived(weight: Int) extends BusinessEvent
+case class PackageShipped(shippedDate: Date) extends BusinessEvent

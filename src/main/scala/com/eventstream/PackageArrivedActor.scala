@@ -10,7 +10,7 @@ import akka.actor.Actor.Receive
  * on 2/6/16.
  */
 
-class PackageArrivedListener extends Actor {
+class PackageArrivedActor extends Actor {
 
   override def receive: Receive = {
     case PackageArrived(weight) => {
