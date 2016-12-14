@@ -10,12 +10,13 @@ import com.eventstream.BusinessEvent
 object EventStreamDispatcher {
 
   val system = ActorSystem("EventStream")
-  val packageArrivedActor = system.actorOf(Props[PackageArrivedActor], name = "packageArrivedConsumer")
+  val shippingActor = system.actorOf(Props[ShippingActor], name = "ShippingActor")
 
   def dispatchEvent(): Unit = {
 
-    packageArrivedActor ! readEventFromStream(PackageArrived.getClass)
-    packageArrivedActor ! "PackageCanceled"
+    shippingActor ! readEventFromStream(PackageArrived.getClass)
+    shippingActor ! readEventFromStream(PackageArrived.getClass)
+    shippingActor ! "PackageCanceled"
   }
 
   def readEventFromStream(clazz: Class[_]): BusinessEvent = {
