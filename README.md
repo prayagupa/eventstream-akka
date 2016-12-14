@@ -2,11 +2,17 @@
 `Actor` and `ActorState` example to consume the events
 
 ```
-eventDispatcher             ->                   actorRef
-dispatches the event               receives the event and processes it 
+eventDispatcher             ->  MailBox   <- actor
+dispatches the event                         receives the event and processes it 
 ```
 
 
 ```
 sbt run
 ```
+
+
+References
+----------
+
+http://learnyousomeerlang.com/the-hitchhikers-guide-to-concurrency
